@@ -95,23 +95,48 @@ document.addEventListener('DOMContentLoaded', () => {
     function setupFormSubmit() {
         elements.form.onsubmit = async (e) => {
             e.preventDefault();
+            
+            // Проверяем количество интересов
             if (elements.selectedInterests.size < 3) {
                 alert('Пожалуйста, выберите минимум 3 интереса');
                 return false;
             }
 
+            // Получаем текущие данные из формы
             const formData = {
-                photo: elements.photoPreview.querySelector('img')?.src || null,
-                name: document.getElementById('name').value,
+                name: document.getElementById('name').value.trim(),
                 age: parseInt(document.getElementById('age').value),
-                city: document.getElementById('city').value,
-                bio: document.getElementById('bio').value,
-                interests: Array.from(elements.selectedInterests)
+                city: document.getElementById('city').value.trim(),
+                bio: document.getElementById('bio').value.trim(),
+                interests: Array.from(elements.selectedInterests),
+                // Сохраняем текущее фото или берем из предыдущего профиля
+                photo: elements.photoPreview.querySelector('img')?.src || 
+                      (JSON.parse(localStorage.getItem('userProfile'))?.photo || null)
             };
 
-            localStorage.setItem('userProfile', JSON.stringify(formData));
-            updateProfileDisplay(formData);
-            showMainContent();
+            // Проверяем валидность данных
+            if (!formData.name || !formData.age || !formData.city || !formData.bio) {
+                alert('Пожалуйста, заполните все поля');
+                return false;
+            }
+
+            try {
+                // Сохраняем в localStorage
+                localStorage.setItem('userProfile', JSON.stringify(formData));
+                
+                // Обновляем отображение
+                updateProfileDisplay(formData);
+                
+                // Показываем основной контент
+                showMainContent();
+                
+                // Очищаем форму
+                clearForm();
+            } catch (error) {
+                console.error('Ошибка при сохранении профиля:', error);
+                alert('Произошла ошибка при сохранении профиля');
+            }
+
             return false;
         };
     }
@@ -164,21 +189,24 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function updateProfileDisplay(profileData) {
-    // Обновляем отображаемые данные в карточке профиля
     const profileCard = document.querySelector('.profile-card');
     if (profileCard) {
         const photoContainer = profileCard.querySelector('.profile-photo');
         const infoContainer = profileCard.querySelector('.profile-info');
 
         // Обновляем фото
-        photoContainer.innerHTML = `<img src="${profileData.photo || 'default-photo.jpg'}" alt="Profile Photo">`;
+        if (photoContainer) {
+            photoContainer.innerHTML = `<img src="${profileData.photo || 'default-photo.jpg'}" alt="Profile Photo">`;
+        }
 
         // Обновляем информацию
-        infoContainer.innerHTML = `
-            <h2>${profileData.name}, ${profileData.age}</h2>
-            <p class="location"><i class="fas fa-map-marker-alt"></i> ${profileData.city}</p>
-            <p class="bio">${profileData.bio}</p>
-        `;
+        if (infoContainer) {
+            infoContainer.innerHTML = `
+                <h2>${profileData.name}, ${profileData.age}</h2>
+                <p class="location"><i class="fas fa-map-marker-alt"></i> ${profileData.city}</p>
+                <p class="bio">${profileData.bio}</p>
+            `;
+        }
     }
 }
 
