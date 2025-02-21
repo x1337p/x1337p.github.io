@@ -19,9 +19,7 @@ body {
 }
 
 .header {
-    text-align: center;
-    color: white;
-    margin-bottom: 40px;
+    display: none;
 }
 
 .header h1 {
@@ -421,13 +419,13 @@ body {
 }
 
 .edit-profile-btn {
-    position: absolute;
+    position: fixed;
     top: 20px;
     right: 20px;
-    width: 50px;
-    height: 50px;
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.2);
+    background: #667eea;
     border: none;
     color: white;
     cursor: pointer;
@@ -435,13 +433,15 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    z-index: 1000;
 }
 
 .edit-profile-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: #764ba2;
     transform: scale(1.1);
 }
 
 .edit-profile-btn i {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
 }
