@@ -1,187 +1,167 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Проверяем, есть ли сохраненный профиль
+    const elements = {
+        profileSetup: document.getElementById('profileSetup'),
+        mainContent: document.getElementById('mainContent'),
+        editProfileBtn: document.getElementById('editProfileBtn'),
+        form: document.getElementById('profileForm'),
+        photoInput: document.getElementById('photoInput'),
+        photoPreview: document.querySelector('.photo-preview'),
+        selectedInterests: new Set(),
+        interestsContainer: document.getElementById('selectedInterests')
+    };
+
     const savedProfile = localStorage.getItem('userProfile');
-    const profileSetup = document.getElementById('profileSetup');
-    const mainContent = document.getElementById('mainContent');
-    const editProfileBtn = document.getElementById('editProfileBtn');
 
-    if (!savedProfile) {
-        // Показываем форму регистрации
-        profileSetup.style.display = 'block';
-        mainContent.style.display = 'none';
-        editProfileBtn.style.display = 'none';
-        setupProfileForm(false); // false для создания нового профиля
+    // Инициализация приложения
+    if (savedProfile) {
+        showMainContent();
+        updateProfileDisplay(JSON.parse(savedProfile));
     } else {
-        // Показываем основной контент
-        profileSetup.style.display = 'none';
-        mainContent.style.display = 'block';
-        editProfileBtn.style.display = 'block';
-        initializeSwiper();
-    }
-
-    // Обработчик кнопки редактирования
-    editProfileBtn.addEventListener('click', function() {
-        mainContent.style.display = 'none';
-        profileSetup.style.display = 'block';
-        setupProfileForm(true); // true для редактирования
-    });
-});
-
-function setupProfileForm(isEditing = false) {
-    const form = document.getElementById('profileForm');
-    const photoInput = document.getElementById('photoInput');
-    const photoPreview = document.querySelector('.photo-preview');
-    const selectedInterests = new Set();
-    const selectedInterestsContainer = document.getElementById('selectedInterests');
-    const minInterests = 3;
-
-    // Очищаем форму и контейнер интересов
-    form.reset();
-    selectedInterestsContainer.innerHTML = '';
-    document.querySelectorAll('.interest-btn').forEach(btn => {
-        btn.classList.remove('selected');
-    });
-
-    // Если редактирование - загружаем существующие данные
-    if (isEditing) {
-        const savedProfile = JSON.parse(localStorage.getItem('userProfile'));
-        if (savedProfile) {
-            document.getElementById('name').value = savedProfile.name || '';
-            document.getElementById('age').value = savedProfile.age || '';
-            document.getElementById('city').value = savedProfile.city || '';
-            document.getElementById('bio').value = savedProfile.bio || '';
-            
-            if (savedProfile.photo) {
-                photoPreview.innerHTML = `<img src="${savedProfile.photo}" alt="Preview">`;
-            }
-            
-            if (savedProfile.interests) {
-                savedProfile.interests.forEach(interest => {
-                    const button = document.querySelector(`[data-interest="${interest}"]`);
-                    if (button) {
-                        button.classList.add('selected');
-                        selectedInterests.add(interest);
-                        addInterestTag(interest);
-                    }
-                });
-            }
-        }
-        
-        document.querySelector('.profile-setup h2').textContent = 'Редактирование профиля';
-        document.querySelector('.btn-submit').textContent = 'Сохранить изменения';
-    } else {
-        document.querySelector('.profile-setup h2').textContent = 'Создание профиля';
-        document.querySelector('.btn-submit').textContent = 'Создать профиль';
-        photoPreview.innerHTML = `
-            <i class="fas fa-camera"></i>
-            <span>Добавить фото</span>
-        `;
+        showProfileSetup();
     }
 
     // Обработчики событий
-    photoInput.addEventListener('change', (e) => {
+    elements.editProfileBtn.addEventListener('click', () => {
+        showProfileSetup(true);
+        setupForm(true);
+    });
+
+    elements.photoInput.addEventListener('change', handlePhotoUpload);
+    setupInterestsHandlers();
+    setupFormSubmit();
+
+    // Основные функции
+    function showMainContent() {
+        elements.profileSetup.style.display = 'none';
+        elements.mainContent.style.display = 'block';
+        elements.editProfileBtn.style.display = 'block';
+        initializeSwiper();
+    }
+
+    function showProfileSetup(isEditing = false) {
+        elements.mainContent.style.display = 'none';
+        elements.profileSetup.style.display = 'block';
+        elements.editProfileBtn.style.display = isEditing ? 'block' : 'none';
+    }
+
+    function setupForm(isEditing) {
+        clearForm();
+        if (isEditing && savedProfile) {
+            const data = JSON.parse(savedProfile);
+            fillFormWithData(data);
+        }
+    }
+
+    function clearForm() {
+        elements.form.reset();
+        elements.interestsContainer.innerHTML = '';
+        elements.selectedInterests.clear();
+        document.querySelectorAll('.interest-btn').forEach(btn => btn.classList.remove('selected'));
+    }
+
+    function fillFormWithData(data) {
+        Object.entries(data).forEach(([key, value]) => {
+            if (key !== 'interests' && key !== 'photo') {
+                const input = document.getElementById(key);
+                if (input) input.value = value;
+            }
+        });
+
+        if (data.photo) {
+            elements.photoPreview.innerHTML = `<img src="${data.photo}" alt="Preview">`;
+        }
+
+        if (data.interests) {
+            data.interests.forEach(interest => {
+                const button = document.querySelector(`[data-interest="${interest}"]`);
+                if (button) {
+                    button.classList.add('selected');
+                    elements.selectedInterests.add(interest);
+                    addInterestTag(interest);
+                }
+            });
+        }
+    }
+
+    function handlePhotoUpload(e) {
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
-            reader.onload = (e) => {
-                photoPreview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
-            };
+            reader.onload = e => elements.photoPreview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
             reader.readAsDataURL(file);
         }
-    });
+    }
 
-    document.querySelectorAll('.interest-btn').forEach(button => {
-        button.addEventListener('click', () => {
-            const interest = button.dataset.interest;
-            if (button.classList.contains('selected')) {
-                button.classList.remove('selected');
-                selectedInterests.delete(interest);
-                removeInterestTag(interest);
-            } else {
-                button.classList.add('selected');
-                selectedInterests.add(interest);
-                addInterestTag(interest);
+    function setupFormSubmit() {
+        elements.form.onsubmit = async (e) => {
+            e.preventDefault();
+            if (elements.selectedInterests.size < 3) {
+                alert('Пожалуйста, выберите минимум 3 интереса');
+                return false;
             }
-            validateInterests();
-        });
-    });
 
-    // Обновляем обработчик отправки формы
-    form.onsubmit = async (e) => {
-        e.preventDefault();
+            const formData = {
+                photo: elements.photoPreview.querySelector('img')?.src || null,
+                name: document.getElementById('name').value,
+                age: parseInt(document.getElementById('age').value),
+                city: document.getElementById('city').value,
+                bio: document.getElementById('bio').value,
+                interests: Array.from(elements.selectedInterests)
+            };
 
-        if (selectedInterests.size < minInterests) {
-            alert(`Пожалуйста, выберите минимум ${minInterests} интереса`);
-            return;
-        }
-
-        const formData = {
-            photo: photoPreview.querySelector('img')?.src || null,
-            name: document.getElementById('name').value,
-            age: parseInt(document.getElementById('age').value),
-            city: document.getElementById('city').value,
-            bio: document.getElementById('bio').value,
-            interests: Array.from(selectedInterests)
+            localStorage.setItem('userProfile', JSON.stringify(formData));
+            updateProfileDisplay(formData);
+            showMainContent();
+            return false;
         };
+    }
 
-        // Сохраняем профиль
-        localStorage.setItem('userProfile', JSON.stringify(formData));
+    function setupInterestsHandlers() {
+        document.querySelectorAll('.interest-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const interest = button.dataset.interest;
+                if (button.classList.contains('selected')) {
+                    button.classList.remove('selected');
+                    elements.selectedInterests.delete(interest);
+                    removeInterestTag(interest);
+                } else {
+                    button.classList.add('selected');
+                    elements.selectedInterests.add(interest);
+                    addInterestTag(interest);
+                }
+                validateInterests();
+            });
+        });
+    }
 
-        // Обновляем отображаемые данные
-        updateProfileDisplay(formData);
-
-        // Переход к основному контенту
-        const profileSetup = document.getElementById('profileSetup');
-        const mainContent = document.getElementById('mainContent');
-        const editProfileBtn = document.getElementById('editProfileBtn');
-
-        profileSetup.style.display = 'none';
-        mainContent.style.display = 'block';
-        editProfileBtn.style.display = 'block';
-
-        // Перезагружаем свайпер
-        initializeSwiper();
-
-        return false;
-    };
-
-    // Вспомогательные функции
+    // Вспомогательные функции для работы с интересами
     function addInterestTag(interest) {
         const tag = document.createElement('div');
         tag.className = 'selected-interest-tag';
-        tag.innerHTML = `
-            ${interest}
-            <button type="button" onclick="removeInterest('${interest}')">
-                <i class="fas fa-times"></i>
-            </button>
-        `;
-        selectedInterestsContainer.appendChild(tag);
+        tag.innerHTML = `${interest}<button onclick="removeInterest('${interest}')"><i class="fas fa-times"></i></button>`;
+        elements.interestsContainer.appendChild(tag);
     }
 
     function removeInterestTag(interest) {
-        const tags = selectedInterestsContainer.getElementsByClassName('selected-interest-tag');
-        for (let tag of tags) {
-            if (tag.textContent.trim() === interest) {
-                tag.remove();
-                break;
-            }
-        }
+        const tag = Array.from(elements.interestsContainer.getElementsByClassName('selected-interest-tag'))
+            .find(tag => tag.textContent.trim() === interest);
+        if (tag) tag.remove();
     }
 
     window.removeInterest = (interest) => {
-        selectedInterests.delete(interest);
+        elements.selectedInterests.delete(interest);
         removeInterestTag(interest);
-        const button = document.querySelector(`[data-interest="${interest}"]`);
-        if (button) button.classList.remove('selected');
+        document.querySelector(`[data-interest="${interest}"]`)?.classList.remove('selected');
         validateInterests();
     };
 
     function validateInterests() {
         const submitButton = document.querySelector('.btn-submit');
-        submitButton.disabled = selectedInterests.size < minInterests;
-        submitButton.style.opacity = submitButton.disabled ? '0.5' : '1';
+        const isValid = elements.selectedInterests.size >= 3;
+        submitButton.disabled = !isValid;
+        submitButton.style.opacity = isValid ? '1' : '0.5';
     }
-}
+});
 
 function updateProfileDisplay(profileData) {
     // Обновляем отображаемые данные в карточке профиля
