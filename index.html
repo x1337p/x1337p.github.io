@@ -16,99 +16,101 @@
         
         <!-- Форма регистрации -->
         <div class="profile-setup" id="profileSetup">
-            <h2>Создание профиля</h2>
-            <form id="profileForm" class="profile-form">
-                <div class="photo-upload">
-                    <input type="file" id="photoInput" accept="image/*" required aria-label="Выберите фото профиля">
-                    <label for="photoInput" class="photo-label">
-                        <div class="photo-preview">
-                            <i class="fas fa-camera"></i>
-                            <span>Добавить фото</span>
-                        </div>
-                    </label>
-                </div>
-
-                <div class="form-group">
-                    <label for="name">Имя</label>
-                    <input type="text" id="name" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="age">Возраст</label>
-                    <input type="number" id="age" min="14" max="100" required>
-                    <span class="age-hint">Минимальный возраст: 14 лет</span>
-                </div>
-
-                <div class="form-group">
-                    <label for="city">Город</label>
-                    <input type="text" id="city" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="bio">О себе</label>
-                    <textarea id="bio" rows="3" required></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="interests">Интересы</label>
-                    <p class="interests-hint">Выберите минимум 3 интереса</p>
-                    <div class="interests-container" id="interestsContainer">
-                        <div class="interests-grid">
-                            <button type="button" class="interest-btn" data-interest="Путешествия">
-                                <i class="fas fa-plane"></i>
-                                Путешествия
-                            </button>
-                            <button type="button" class="interest-btn" data-interest="Спорт">
-                                <i class="fas fa-running"></i>
-                                Спорт
-                            </button>
-                            <button type="button" class="interest-btn" data-interest="Музыка">
-                                <i class="fas fa-music"></i>
-                                Музыка
-                            </button>
-                            <button type="button" class="interest-btn" data-interest="Кино">
-                                <i class="fas fa-film"></i>
-                                Кино
-                            </button>
-                            <button type="button" class="interest-btn" data-interest="Искусство">
-                                <i class="fas fa-palette"></i>
-                                Искусство
-                            </button>
-                            <button type="button" class="interest-btn" data-interest="Фотография">
+            <div class="profile-setup-scroll">
+                <h2>Создание профиля</h2>
+                <form id="profileForm" class="profile-form">
+                    <div class="photo-upload">
+                        <input type="file" id="photoInput" accept="image/*" required aria-label="Выберите фото профиля">
+                        <label for="photoInput" class="photo-label">
+                            <div class="photo-preview">
                                 <i class="fas fa-camera"></i>
-                                Фотография
-                            </button>
-                            <button type="button" class="interest-btn" data-interest="Кулинария">
-                                <i class="fas fa-utensils"></i>
-                                Кулинария
-                            </button>
-                            <button type="button" class="interest-btn" data-interest="Книги">
-                                <i class="fas fa-book"></i>
-                                Книги
-                            </button>
-                            <button type="button" class="interest-btn" data-interest="Танцы">
-                                <i class="fas fa-music"></i>
-                                Танцы
-                            </button>
-                            <button type="button" class="interest-btn" data-interest="Йога">
-                                <i class="fas fa-peace"></i>
-                                Йога
-                            </button>
-                            <button type="button" class="interest-btn" data-interest="Технологии">
-                                <i class="fas fa-laptop-code"></i>
-                                Технологии
-                            </button>
-                            <button type="button" class="interest-btn" data-interest="Природа">
-                                <i class="fas fa-tree"></i>
-                                Природа
-                            </button>
-                        </div>
-                        <div class="selected-interests" id="selectedInterests"></div>
+                                <span>Добавить фото</span>
+                            </div>
+                        </label>
                     </div>
-                </div>
 
-                <button type="submit" class="btn-submit">Создать профиль</button>
-            </form>
+                    <div class="form-group">
+                        <label for="name">Имя</label>
+                        <input type="text" id="name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="age">Возраст</label>
+                        <input type="number" id="age" min="14" max="100" required>
+                        <span class="age-hint">Минимальный возраст: 14 лет</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="city">Город</label>
+                        <input type="text" id="city" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bio">О себе</label>
+                        <textarea id="bio" rows="3" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="interests">Интересы</label>
+                        <p class="interests-hint">Выберите минимум 3 интереса</p>
+                        <div class="interests-container" id="interestsContainer">
+                            <div class="interests-grid">
+                                <button type="button" class="interest-btn" data-interest="Путешествия">
+                                    <i class="fas fa-plane"></i>
+                                    Путешествия
+                                </button>
+                                <button type="button" class="interest-btn" data-interest="Спорт">
+                                    <i class="fas fa-running"></i>
+                                    Спорт
+                                </button>
+                                <button type="button" class="interest-btn" data-interest="Музыка">
+                                    <i class="fas fa-music"></i>
+                                    Музыка
+                                </button>
+                                <button type="button" class="interest-btn" data-interest="Кино">
+                                    <i class="fas fa-film"></i>
+                                    Кино
+                                </button>
+                                <button type="button" class="interest-btn" data-interest="Искусство">
+                                    <i class="fas fa-palette"></i>
+                                    Искусство
+                                </button>
+                                <button type="button" class="interest-btn" data-interest="Фотография">
+                                    <i class="fas fa-camera"></i>
+                                    Фотография
+                                </button>
+                                <button type="button" class="interest-btn" data-interest="Кулинария">
+                                    <i class="fas fa-utensils"></i>
+                                    Кулинария
+                                </button>
+                                <button type="button" class="interest-btn" data-interest="Книги">
+                                    <i class="fas fa-book"></i>
+                                    Книги
+                                </button>
+                                <button type="button" class="interest-btn" data-interest="Танцы">
+                                    <i class="fas fa-music"></i>
+                                    Танцы
+                                </button>
+                                <button type="button" class="interest-btn" data-interest="Йога">
+                                    <i class="fas fa-peace"></i>
+                                    Йога
+                                </button>
+                                <button type="button" class="interest-btn" data-interest="Технологии">
+                                    <i class="fas fa-laptop-code"></i>
+                                    Технологии
+                                </button>
+                                <button type="button" class="interest-btn" data-interest="Природа">
+                                    <i class="fas fa-tree"></i>
+                                    Природа
+                                </button>
+                            </div>
+                            <div class="selected-interests" id="selectedInterests"></div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-submit">Создать профиль</button>
+                </form>
+            </div>
         </div>
 
         <!-- Основной контент (карточки) -->
