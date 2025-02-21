@@ -42,7 +42,7 @@ body {
     user-select: none;
     transform-origin: center;
     transition: transform 0.5s;
-    margin-top: 15px;
+    margin-top: 25px;
 }
 
 .profile-card.swiping {
