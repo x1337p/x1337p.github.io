@@ -1,0 +1,413 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.header {
+    text-align: center;
+    color: white;
+    margin-bottom: 40px;
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.profile-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    position: relative;
+    user-select: none;
+    transform-origin: center;
+    transition: transform 0.5s;
+}
+
+.profile-card.swiping {
+    transition: none;
+}
+
+.swipe-info {
+    position: absolute;
+    top: 50px;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 2rem;
+    font-weight: bold;
+    color: white;
+    opacity: 0;
+    transition: opacity 0.1s;
+}
+
+.like-info {
+    right: 20px;
+    background: rgba(46, 204, 113, 0.8);
+    transform: rotate(20deg);
+}
+
+.nope-info {
+    left: 20px;
+    background: rgba(231, 76, 60, 0.8);
+    transform: rotate(-20deg);
+}
+
+.profile-photo {
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+}
+
+.profile-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-info {
+    padding: 20px;
+}
+
+.profile-info h2 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.location {
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.location i {
+    margin-right: 5px;
+}
+
+.bio {
+    color: #555;
+    line-height: 1.6;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    gap: 20px;
+}
+
+.btn-like, .btn-dislike {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5rem;
+    transition: transform 0.2s;
+}
+
+.btn-like {
+    background: #2ecc71;
+    color: white;
+}
+
+.btn-dislike {
+    background: #e74c3c;
+    color: white;
+}
+
+.btn-like:hover, .btn-dislike:hover {
+    transform: scale(1.1);
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .profile-photo {
+        height: 300px;
+    }
+    
+    .action-buttons {
+        padding: 15px;
+    }
+}
+
+/* Обновляем стили формы регистрации */
+.profile-setup {
+    background: white;
+    border-radius: 25px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.profile-setup h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+.profile-form {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.form-group {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 16px;
+    border: 1px solid #eee;
+    transition: all 0.3s ease;
+}
+
+.form-group:focus-within {
+    background: white;
+    border-color: #667eea;
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #666;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #eee;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    background: white;
+    color: #333;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: #667eea;
+    outline: none;
+}
+
+.form-group textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.photo-upload {
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.photo-upload input[type="file"] {
+    position: absolute;
+    width: 0;
+    height: 0;
+    opacity: 0;
+    overflow: hidden;
+}
+
+.photo-label {
+    cursor: pointer;
+    display: block;
+}
+
+.photo-preview {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    border: 3px dashed #667eea;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+    cursor: pointer;
+}
+
+.photo-preview:hover {
+    background: #eef0ff;
+    transform: scale(1.02);
+}
+
+.photo-preview i {
+    font-size: 2.5rem;
+    color: #667eea;
+}
+
+.photo-preview span {
+    color: #667eea;
+    font-weight: 500;
+}
+
+.photo-preview img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Обновленные стили для интересов */
+.interests-hint {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.interests-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.interest-btn {
+    background: white;
+    border: 2px solid #eee;
+    border-radius: 15px;
+    padding: 12px 15px;
+    font-size: 0.9rem;
+    color: #555;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+}
+
+.interest-btn i {
+    font-size: 1.2rem;
+    color: #667eea;
+}
+
+.interest-btn:hover {
+    background: #eef0ff;
+    border-color: #667eea;
+    transform: translateY(-2px);
+}
+
+.interest-btn.selected {
+    background: #667eea;
+    border-color: #667eea;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.selected-interests {
+    min-height: 50px;
+    padding: 15px;
+    background: white;
+    border: 2px solid #eee;
+    border-radius: 15px;
+    margin-top: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.selected-interest-tag {
+    background: #667eea;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: tagAppear 0.3s ease;
+}
+
+@keyframes tagAppear {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.btn-submit {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 15px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 20px;
+}
+
+.btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+.btn-submit:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.age-hint {
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 8px;
+    padding-left: 16px;
+}
+
+/* Анимации */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.form-group {
+    animation: fadeIn 0.5s ease;
+}
