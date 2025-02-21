@@ -72,6 +72,10 @@ function setupProfileForm(isEditing = false) {
     } else {
         document.querySelector('.profile-setup h2').textContent = 'Создание профиля';
         document.querySelector('.btn-submit').textContent = 'Создать профиль';
+        photoPreview.innerHTML = `
+            <i class="fas fa-camera"></i>
+            <span>Добавить фото</span>
+        `;
     }
 
     // Обработчики событий
@@ -102,8 +106,8 @@ function setupProfileForm(isEditing = false) {
         });
     });
 
-    // Обработчик отправки формы
-    form.addEventListener('submit', async (e) => {
+    // Обновляем обработчик отправки формы
+    form.onsubmit = async (e) => {
         e.preventDefault();
 
         if (selectedInterests.size < minInterests) {
@@ -123,17 +127,23 @@ function setupProfileForm(isEditing = false) {
         // Сохраняем профиль
         localStorage.setItem('userProfile', JSON.stringify(formData));
 
+        // Обновляем отображаемые данные
+        updateProfileDisplay(formData);
+
         // Переход к основному контенту
+        const profileSetup = document.getElementById('profileSetup');
+        const mainContent = document.getElementById('mainContent');
+        const editProfileBtn = document.getElementById('editProfileBtn');
+
         profileSetup.style.display = 'none';
         mainContent.style.display = 'block';
         editProfileBtn.style.display = 'block';
-        
+
         // Перезагружаем свайпер
         initializeSwiper();
-        
-        // Обновляем отображаемые данные
-        updateProfileDisplay(formData);
-    });
+
+        return false;
+    };
 
     // Вспомогательные функции
     function addInterestTag(interest) {
@@ -177,15 +187,18 @@ function updateProfileDisplay(profileData) {
     // Обновляем отображаемые данные в карточке профиля
     const profileCard = document.querySelector('.profile-card');
     if (profileCard) {
-        const photo = profileCard.querySelector('.profile-photo img');
-        const name = profileCard.querySelector('.profile-info h2');
-        const location = profileCard.querySelector('.location');
-        const bio = profileCard.querySelector('.bio');
+        const photoContainer = profileCard.querySelector('.profile-photo');
+        const infoContainer = profileCard.querySelector('.profile-info');
 
-        if (photo) photo.src = profileData.photo || 'default-photo.jpg';
-        if (name) name.textContent = `${profileData.name}, ${profileData.age}`;
-        if (location) location.innerHTML = `<i class="fas fa-map-marker-alt"></i> ${profileData.city}`;
-        if (bio) bio.textContent = profileData.bio;
+        // Обновляем фото
+        photoContainer.innerHTML = `<img src="${profileData.photo || 'default-photo.jpg'}" alt="Profile Photo">`;
+
+        // Обновляем информацию
+        infoContainer.innerHTML = `
+            <h2>${profileData.name}, ${profileData.age}</h2>
+            <p class="location"><i class="fas fa-map-marker-alt"></i> ${profileData.city}</p>
+            <p class="bio">${profileData.bio}</p>
+        `;
     }
 }
 
