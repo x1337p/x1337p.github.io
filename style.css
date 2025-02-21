@@ -181,6 +181,8 @@ body {
     max-width: 500px;
     margin: 0 auto;
     margin-top: 25px;
+    transition: opacity 0.3s ease;
+    opacity: 0;
 }
 
 .profile-setup h2 {
@@ -461,4 +463,8 @@ body {
 .edit-profile-btn:active {
     transform: scale(0.95);
     background: #764ba2;
+}
+
+#mainContent {
+    opacity: 1;
 }
