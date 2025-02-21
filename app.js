@@ -20,25 +20,19 @@ document.addEventListener('DOMContentLoaded', () => {
         loadUserProfile();
     }
 
-    // Добавляем обработчик для кнопки редактирования
+    // Обновляем обработчик для кнопки редактирования
     editProfileBtn.addEventListener('click', () => {
         const mainContent = document.getElementById('mainContent');
         const profileSetup = document.getElementById('profileSetup');
         
-        // Анимация перехода
-        mainContent.style.opacity = '0';
-        setTimeout(() => {
-            mainContent.style.display = 'none';
-            profileSetup.style.display = 'block';
-            setTimeout(() => {
-                profileSetup.style.opacity = '1';
-            }, 50);
-        }, 300);
-
-        // Загружаем данные профиля в форму
-        loadUserProfile();
+        // Скрываем основной контент и показываем форму редактирования
+        mainContent.style.display = 'none';
+        profileSetup.style.display = 'block';
         
-        // Меняем заголовок и текст кнопки
+        // Загружаем данные профиля в форму
+        setupProfileForm(true); // Передаем true для режима редактирования
+        
+        // Меняем заголовок формы
         document.querySelector('.profile-setup h2').textContent = 'Редактирование профиля';
         document.querySelector('.btn-submit').textContent = 'Сохранить изменения';
     });
@@ -188,9 +182,39 @@ function setupProfileForm(isEditing = false) {
         }
     }
 
-    // Если это редактирование, загружаем существующие данные
+    // Если это режим редактирования, загружаем существующие данные
     if (isEditing) {
-        loadUserProfile();
+        const savedProfile = JSON.parse(localStorage.getItem('userProfile'));
+        if (savedProfile) {
+            // Очищаем предыдущие выбранные интересы
+            selectedInterests.clear();
+            selectedInterestsContainer.innerHTML = '';
+            
+            // Заполняем форму сохраненными данными
+            document.getElementById('name').value = savedProfile.name || '';
+            document.getElementById('age').value = savedProfile.age || '';
+            document.getElementById('city').value = savedProfile.city || '';
+            document.getElementById('bio').value = savedProfile.bio || '';
+            
+            // Загружаем фото
+            if (savedProfile.photo) {
+                photoPreview.innerHTML = `<img src="${savedProfile.photo}" alt="Preview">`;
+            }
+            
+            // Выбираем сохраненные интересы
+            if (savedProfile.interests) {
+                savedProfile.interests.forEach(interest => {
+                    const button = document.querySelector(`[data-interest="${interest}"]`);
+                    if (button) {
+                        button.classList.add('selected');
+                        selectedInterests.add(interest);
+                        addInterestTag(interest);
+                    }
+                });
+            }
+            
+            validateInterests();
+        }
     }
 
     // Обновляем обработчик отправки формы
