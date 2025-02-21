@@ -22,35 +22,70 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Добавляем обработчик для кнопки редактирования
     editProfileBtn.addEventListener('click', () => {
-        mainContent.style.display = 'none';
-        profileSetup.style.display = 'block';
-        setupProfileForm(true);
+        const mainContent = document.getElementById('mainContent');
+        const profileSetup = document.getElementById('profileSetup');
+        
+        // Анимация перехода
+        mainContent.style.opacity = '0';
+        setTimeout(() => {
+            mainContent.style.display = 'none';
+            profileSetup.style.display = 'block';
+            setTimeout(() => {
+                profileSetup.style.opacity = '1';
+            }, 50);
+        }, 300);
+
+        // Загружаем данные профиля в форму
+        loadUserProfile();
+        
+        // Меняем заголовок и текст кнопки
+        document.querySelector('.profile-setup h2').textContent = 'Редактирование профиля';
+        document.querySelector('.btn-submit').textContent = 'Сохранить изменения';
     });
 });
 
 function loadUserProfile() {
     const savedProfile = JSON.parse(localStorage.getItem('userProfile'));
     if (savedProfile) {
+        // Очищаем предыдущие выбранные интересы
+        const selectedInterests = document.getElementById('selectedInterests');
+        if (selectedInterests) selectedInterests.innerHTML = '';
+        
+        // Сбрасываем все выбранные кнопки интересов
+        document.querySelectorAll('.interest-btn').forEach(btn => {
+            btn.classList.remove('selected');
+        });
+
         // Заполняем форму сохраненными данными
-        document.getElementById('name').value = savedProfile.name;
-        document.getElementById('age').value = savedProfile.age;
-        document.getElementById('city').value = savedProfile.city;
-        document.getElementById('bio').value = savedProfile.bio;
+        document.getElementById('name').value = savedProfile.name || '';
+        document.getElementById('age').value = savedProfile.age || '';
+        document.getElementById('city').value = savedProfile.city || '';
+        document.getElementById('bio').value = savedProfile.bio || '';
         
         // Загружаем фото
         const photoPreview = document.querySelector('.photo-preview');
         if (savedProfile.photo) {
             photoPreview.innerHTML = `<img src="${savedProfile.photo}" alt="Preview">`;
+        } else {
+            photoPreview.innerHTML = `
+                <i class="fas fa-camera"></i>
+                <span>Добавить фото</span>
+            `;
         }
         
         // Выбираем сохраненные интересы
-        savedProfile.interests.forEach(interest => {
-            const button = document.querySelector(`[data-interest="${interest}"]`);
-            if (button) {
-                button.classList.add('selected');
-                addInterestTag(interest);
-            }
-        });
+        if (savedProfile.interests && Array.isArray(savedProfile.interests)) {
+            savedProfile.interests.forEach(interest => {
+                const button = document.querySelector(`[data-interest="${interest}"]`);
+                if (button) {
+                    button.classList.add('selected');
+                    addInterestTag(interest);
+                }
+            });
+        }
+
+        // Проверяем валидность интересов
+        validateInterests();
     }
 }
 
@@ -317,8 +352,12 @@ function initializeSwiper() {
         profileCard.style.transform = `translate(${translateX}px, 0) rotate(${rotation}deg)`;
         
         setTimeout(() => {
+            // Сбрасываем все стили и индикаторы
             profileCard.style.transition = 'none';
             profileCard.style.transform = 'none';
+            document.querySelector('.like-info').style.opacity = '0';
+            document.querySelector('.nope-info').style.opacity = '0';
+            moveX = 0; // Сбрасываем переменную перемещения
             
             // Здесь можно добавить логику загрузки следующего профиля
             setTimeout(() => {
